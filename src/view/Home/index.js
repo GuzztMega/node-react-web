@@ -13,26 +13,26 @@ function Home(){
   const [getActiveFilter, setActiveFilter] = useState('all');
   const [getState, setState] = useState([]);
   const [getLateCount, setLateCount] = useState();
-  
-  async function loadTask(){
-    await api.get(`/task/filter/${getActiveFilter}/22:22:22:22:22:22`)
-      .then(response => {
-        setState(response.data);
-      });
-  }
-
-  async function lateVerify(){
-    await api.get(`/task/filter/late/22:22:22:22:22:22`)
-      .then(response => {
-        setLateCount(response.data.length);
-      });
-  }
 
   function notification(){
     setActiveFilter('late');
   }
 
   useEffect(() => {
+    async function loadTask(){
+      await api.get(`/task/filter/${getActiveFilter}/22:22:22:22:22:22`)
+        .then(response => {
+          setState(response.data);
+        });
+    };
+
+    async function lateVerify(){
+      await api.get(`/task/filter/late/22:22:22:22:22:22`)
+        .then(response => {
+          setLateCount(response.data.length);
+        });
+    };
+
     loadTask();
     lateVerify();
   },[getActiveFilter])
