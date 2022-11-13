@@ -12,6 +12,7 @@ import TaskCard from '../../components/TaskCard';
 function Home(){
   const [getActiveFilter, setActiveFilter] = useState('all');
   const [getState, setState] = useState([]);
+  const [getLateCount, setLateCount] = useState();
   
   async function loadTask(){
     await api.get(`/task/filter/${getActiveFilter}/22:22:22:22:22:22`)
@@ -20,13 +21,25 @@ function Home(){
       });
   }
 
+  async function lateVerify(){
+    await api.get(`/task/filter/late/22:22:22:22:22:22`)
+      .then(response => {
+        setLateCount(response.data.length);
+      });
+  }
+
+  function notification(){
+    setActiveFilter('late');
+  }
+
   useEffect(() => {
     loadTask();
+    lateVerify();
   },[getActiveFilter])
 
   return (
     <Style.Container>
-      <Header />
+      <Header lateCount={getLateCount} clickNotification={notification}/>
 
       <Style.FilterArea>
         <button type="button" onClick={() => setActiveFilter('all')}>
@@ -48,7 +61,7 @@ function Home(){
 
       
       <Style.Title>
-        <h1>Tarefas</h1>
+        <h1>{getActiveFilter == 'late' ? 'Tarefas Atrasadas' : 'Tarefas'}</h1>
       </Style.Title>
 
       <Style.Content>
